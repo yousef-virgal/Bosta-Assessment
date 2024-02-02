@@ -5,22 +5,28 @@ services:
       - database
     build: ./backend/
     env_file:
-      - ./.backend.env
+      - ./.env
     environment:
       - PORT=$BACKEND_CONTAINER_PORT
     ports:
       - "$BACKEND_LOCAL_PORT:$BACKEND_CONTAINER_PORT"
     restart: unless-stopped
   database:
-    image: mysql
+    image: mysql:5.7.24
     restart: always 
     volumes:
       - "./database/sql_scripts:/docker-entrypoint-initdb.d"
       - "./database/data:/var/lib/mysql"
     env_file:
-      - ./.database.env
+      - ./.env
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
       - MYSQL_DATABASE=$MYSQLDB_DATABASE
     ports:
       - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 10
+      start_period: 30s

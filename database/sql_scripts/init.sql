@@ -6,7 +6,8 @@ USE Library;
 CREATE TABLE IF NOT EXISTS Library.Admins (
     admin_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(50) NOT NULL,
-    password VARCHAR(50) NOT NULL
+    password VARCHAR(200) NOT NULL,
+    refresh_token VARCHAR(200)
 );
 
 GO
@@ -21,3 +22,6 @@ CREATE TABLE IF NOT EXISTS Library.Books (
 );
 
 GO
+
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY '123456'; 
+flush privileges;

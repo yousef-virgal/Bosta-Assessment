@@ -1,0 +1,4 @@
+export enum DATABASE_OPERATION_STATUS{
+    SUCCESS = 0,
+    FAIL = 1
+}
