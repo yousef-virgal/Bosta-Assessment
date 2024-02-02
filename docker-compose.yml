@@ -1,0 +1,26 @@
+version: '3'
+services:
+  backend:
+    depends_on:
+      - database
+    build: ./backend/
+    env_file:
+      - ./.backend.env
+    environment:
+      - PORT=$BACKEND_CONTAINER_PORT
+    ports:
+      - "$BACKEND_LOCAL_PORT:$BACKEND_CONTAINER_PORT"
+    restart: unless-stopped
+  database:
+    image: mysql
+    restart: always 
+    volumes:
+      - "./database/sql_scripts:/docker-entrypoint-initdb.d"
+      - "./database/data:/var/lib/mysql"
+    env_file:
+      - ./.database.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$MYSQLDB_DATABASE
+    ports:
+      - $MYSQLDB_LOCAL_PORT:$MYSQLDB_DOCKER_PORT

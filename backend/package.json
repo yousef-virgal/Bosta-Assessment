@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "tsc -p ./",
+    "prod": "node server.js",
     "start": "npx ts-node ./server.ts"
   },
   "keywords": [],
