@@ -4,6 +4,7 @@ import { sendResponse } from "../helpers/responseHelpers";
 import DataBaseHandler from "../database_handlers/mysql_database_handler/mysql_database_instance";
 import { BaseDataBaseHandler } from "../database_handlers/base_database_handler/base_database_handler";
 import { DATABASE_OPERATION_STATUS } from "../database_handlers/base_database_handler/base_database_handler_types";
+import { getDateFromString } from "../helpers/timeHelpers";
 
 
 interface BrorowerController {
@@ -28,7 +29,7 @@ export const borrowerController: BrorowerController = {
 
     updateBorrower: async (req: Request, res: Response) => {
         const { id } = req.params;
-        if (isNaN(Number(id)))
+        if (isNaN(Number(id)) && Number(id) >= 0)
             return sendResponse(res, 400, "Id needs to be a number");
         
         const {name, email, register_date} = req.body;
@@ -36,17 +37,13 @@ export const borrowerController: BrorowerController = {
         if (!name || !email || !register_date)
             return sendResponse(res, 400, "Missing Paramters");
         
-        let date: Date;
+        const [operationStatus, date] = getDateFromString(register_date);
 
-        try {
-            date = new Date(register_date);
-        }
-        catch {
+        if (operationStatus === false)
             return sendResponse(res, 400, "register_date needs to be a valid date");
-        }
 
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
-        const status = await databaseHandler.updateBorrower(name, email, date, Number(id));
+        const status = await databaseHandler.updateBorrower(name, email, date as Date, Number(id));
 
         if (status == DATABASE_OPERATION_STATUS.SUCCESS)
             return sendResponse(res, 200, "Borrower was updated");
@@ -56,7 +53,7 @@ export const borrowerController: BrorowerController = {
 
     deleteBorrower: async (req: Request, res: Response) => {
         const { id } = req.params;
-        if (isNaN(Number(id)))
+        if (isNaN(Number(id)) && Number(id) >= 0)
             return sendResponse(res, 400, "Id needs to be a number");
         
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
@@ -74,16 +71,12 @@ export const borrowerController: BrorowerController = {
         if (!name || !email || !register_date)
             return sendResponse(res, 400, "Missing Paramters");
         
-        let date: Date;
-        try {
-            date = new Date(register_date);
-        }
-        catch {
+        const [operationStatus, date] = getDateFromString(register_date);
+        if(operationStatus === false)
             return sendResponse(res, 400, "register_date needs to be a valid date");
-        }
 
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
-        const status = await databaseHandler.addBorrower(name, email, date);
+        const status = await databaseHandler.addBorrower(name, email, date as Date);
 
         if (status == DATABASE_OPERATION_STATUS.SUCCESS)
             return sendResponse(res, 200, "Borrower was added");

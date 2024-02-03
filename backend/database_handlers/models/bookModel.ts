@@ -4,5 +4,5 @@ export interface Book {
     author: string,
     isbn: string,
     available_quantity: number,
-    shelf_location?: string
+    shelf_location: string
 }

@@ -4,6 +4,7 @@ import { sendResponse } from "../helpers/responseHelpers";
 import DataBaseHandler from "../database_handlers/mysql_database_handler/mysql_database_instance";
 import { BaseDataBaseHandler } from "../database_handlers/base_database_handler/base_database_handler";
 import { DATABASE_OPERATION_STATUS } from "../database_handlers/base_database_handler/base_database_handler_types";
+import { isPostiveNumber } from "../helpers/typeHelpers";
 
 
 interface BookController {
@@ -30,7 +31,7 @@ export const bookController: BookController = {
 
     updateBook: async (req: Request, res: Response) => {
         const { id } = req.params;
-        if (isNaN(Number(id)))
+        if (isNaN(Number(id)) && Number(id) >= 0)
             return sendResponse(res, 400, "Id needs to be a number");
         
         const {title, author, isbn, available_quantity, shelf_location} = req.body;
@@ -38,8 +39,11 @@ export const bookController: BookController = {
         if (!title || !author || !isbn || !available_quantity || !shelf_location)
             return sendResponse(res, 400, "Missing Paramters");
         
+        if(!isPostiveNumber(available_quantity))
+            return sendResponse(res, 400, "quantity must be a postive number");
+
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
-        const status = await databaseHandler.updateBook(title, author, isbn, available_quantity, shelf_location, Number(id));
+        const status = await databaseHandler.updateBook(title, author, isbn, available_quantity as number, shelf_location, Number(id));
 
         if (status == DATABASE_OPERATION_STATUS.SUCCESS)
             return sendResponse(res, 200, "Book was updated");
@@ -49,7 +53,7 @@ export const bookController: BookController = {
 
     deleteBook: async (req: Request, res: Response) => {
         const { id } = req.params;
-        if (isNaN(Number(id)))
+        if (isNaN(Number(id)) && Number(id) >= 0)
             return sendResponse(res, 400, "Id needs to be a number");
         
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
@@ -66,9 +70,12 @@ export const bookController: BookController = {
         
         if (!title || !author || !isbn || !available_quantity || !shelf_location)
             return sendResponse(res, 400, "Missing Paramters");
-        
+
+        if(!isPostiveNumber(available_quantity))
+            return sendResponse(res, 400, "quantity must be a postive number");
+
         const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
-        const status = await databaseHandler.addBook(title, author, isbn, available_quantity, shelf_location);
+        const status = await databaseHandler.addBook(title, author, isbn, available_quantity as number, shelf_location);
 
         if (status == DATABASE_OPERATION_STATUS.SUCCESS)
             return sendResponse(res, 200, "Book was added");

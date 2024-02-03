@@ -13,19 +13,25 @@ export abstract class BaseDataBaseHandler {
 
     abstract addAdminUser(username: string, password: string): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract addBook(title: string, author: string, isbn: string, availableQuantity: number, shelf_location: string): Promise<DATABASE_OPERATION_STATUS>;
+    abstract addBook(title: string, author: string, isbn: string, availableQuantity: number, shelfLocation: string): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract updateBook(title: string, author: string, isbn: string, availableQuantity: number, shelf_location: string, book_id: number): Promise<DATABASE_OPERATION_STATUS>;
+    abstract updateBook(title: string, author: string, isbn: string, availableQuantity: number, shelfLocation: string, book_id: number): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract deleteBook(book_id: number): Promise<DATABASE_OPERATION_STATUS>;
+    abstract deleteBook(bookId: number): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract readBooks(title?: string, author?: string, isbn?: string): Promise<[DATABASE_OPERATION_STATUS, Book[]]>;
+    abstract readBooks(title?: string, author?: string, isbn?: string, id?: number): Promise<[DATABASE_OPERATION_STATUS, Book[]]>;
 
-    abstract addBorrower(name: string, email: string, register_date: Date): Promise<DATABASE_OPERATION_STATUS>;
+    abstract addBorrower(name: string, email: string, registerDate: Date): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract updateBorrower(name: string, email: string, register_date: Date, borrower_id: number): Promise<DATABASE_OPERATION_STATUS>;
+    abstract updateBorrower(name: string, email: string, registerDate: Date, borrowerId: number): Promise<DATABASE_OPERATION_STATUS>;
 
-    abstract deleteBorrower(borrower_id: number): Promise<DATABASE_OPERATION_STATUS>;
+    abstract deleteBorrower(borrowerId: number): Promise<DATABASE_OPERATION_STATUS>;
 
     abstract readBorrowers(): Promise<[DATABASE_OPERATION_STATUS, Borrower[]]>;
+
+    abstract borrowBook(borrowerId: number, bookId: number, dueDate: Date, registrationDate: Date): Promise<DATABASE_OPERATION_STATUS>;
+
+    abstract returnBook(borrowerId: number, bookId: number): Promise<DATABASE_OPERATION_STATUS>;
+
+    abstract readBorrowedBooks(borrowerId: number): Promise<[DATABASE_OPERATION_STATUS, Book[]]>;
 }

@@ -2,7 +2,7 @@ import mysql, { Connection, ResultSetHeader } from "mysql2/promise";
 
 import { BaseDataBaseHandler } from "../base_database_handler/base_database_handler";
 import { DATABASE_OPERATION_STATUS } from "../base_database_handler/base_database_handler_types";
-import { ADD_ADMIN_USER, ADD_BOOK, ADD_BORROWER, DELETE_BOOK, DELETE_BORROWER, READ_ADMIN_USER, READ_BOOKS, READ_BORROWERS, UPDATE_BOOK, UPDATE_BORROWER, UPDATE_JWT } from "./mysql_query_strings";
+import { ADD_ADMIN_USER, ADD_BOOK, ADD_BORROWER, BORROW_BOOK, DELETE_BOOK, DELETE_BORROWER, READ_ADMIN_USER, READ_BOOKS, READ_BOOKS_BATCH, READ_BORROWED_BOOKS, READ_BORROWERS, RETURN_BOOK, UPDATE_BOOK, UPDATE_BORROWER, UPDATE_JWT } from "./mysql_query_strings";
 import { Admin } from "../models/adminModel";
 import { Book } from "../models/bookModel";
 import { Borrower } from "../models/borrowerModel";
@@ -64,9 +64,9 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
     }
 
-    async addBook(title: string, author: string, isbn: string, availableQuantity: number, shelf_location: string): Promise<DATABASE_OPERATION_STATUS> {
+    async addBook(title: string, author: string, isbn: string, availableQuantity: number, shelfLocation: string): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            await (this.databaseInstance as Connection).execute(ADD_BOOK, [title, author, isbn, availableQuantity, shelf_location]);
+            await (this.databaseInstance as Connection).execute(ADD_BOOK, [title, author, isbn, availableQuantity, shelfLocation]);
             
             return DATABASE_OPERATION_STATUS.SUCCESS;
         }
@@ -75,23 +75,9 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
     }
 
-    async updateBook(title: string, author: string, isbn: string, availableQuantity: number, shelf_location: string, book_id: number): Promise<DATABASE_OPERATION_STATUS> {
+    async updateBook(title: string, author: string, isbn: string, availableQuantity: number, shelfLocation: string, bookId: number): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            const [result] = await (this.databaseInstance as Connection).execute(UPDATE_BOOK, [title, author, isbn, availableQuantity, shelf_location, book_id]);
-            
-            if((result as ResultSetHeader).affectedRows == 0)
-                return DATABASE_OPERATION_STATUS.FAIL;
-
-            return DATABASE_OPERATION_STATUS.SUCCESS;
-        }
-        catch {
-            return DATABASE_OPERATION_STATUS.FAIL;
-        }
-    }
-
-    async deleteBook(book_id: number): Promise<DATABASE_OPERATION_STATUS> {
-        try{
-            const [result] = await (this.databaseInstance as Connection).execute(DELETE_BOOK, [book_id]);
+            const [result] = await (this.databaseInstance as Connection).execute(UPDATE_BOOK, [title, author, isbn, availableQuantity, shelfLocation, bookId]);
             
             if((result as ResultSetHeader).affectedRows == 0)
                 return DATABASE_OPERATION_STATUS.FAIL;
@@ -103,9 +89,23 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
     }
 
-    async readBooks(title?: string, author?: string, isbn?: string): Promise<[DATABASE_OPERATION_STATUS, Book[]]> {
+    async deleteBook(bookId: number): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            const [result] = await (this.databaseInstance as Connection).execute(READ_BOOKS, [title !== undefined ? title : null, author !== undefined ? author : null, isbn !== undefined ? isbn : null]);
+            const [result] = await (this.databaseInstance as Connection).execute(DELETE_BOOK, [bookId]);
+            
+            if((result as ResultSetHeader).affectedRows == 0)
+                return DATABASE_OPERATION_STATUS.FAIL;
+
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch {
+            return DATABASE_OPERATION_STATUS.FAIL;
+        }
+    }
+
+    async readBooks(title?: string, author?: string, isbn?: string, id?: number): Promise<[DATABASE_OPERATION_STATUS, Book[]]> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).query(READ_BOOKS, [title !== undefined ? title : null, author !== undefined ? author : null, isbn !== undefined ? isbn : null, id !== undefined ? id : null]);
             return [DATABASE_OPERATION_STATUS.SUCCESS, result as Book[]];
         }
         catch (err) {
@@ -113,20 +113,20 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
     }
 
-    async addBorrower(name: string, email: string, register_date: Date): Promise<DATABASE_OPERATION_STATUS> {
+    async addBorrower(name: string, email: string, registerDate: Date): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            await (this.databaseInstance as Connection).execute(ADD_BORROWER, [name, email, register_date]);
+            await (this.databaseInstance as Connection).execute(ADD_BORROWER, [name, email, registerDate]);
             
             return DATABASE_OPERATION_STATUS.SUCCESS;
         }
-        catch {
+        catch{
             return DATABASE_OPERATION_STATUS.FAIL;
         }
     }
 
-    async deleteBorrower(borrower_id: number): Promise<DATABASE_OPERATION_STATUS> {
+    async deleteBorrower(borrowerId: number): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            const [result] = await (this.databaseInstance as Connection).execute(DELETE_BORROWER, [borrower_id]);
+            const [result] = await (this.databaseInstance as Connection).execute(DELETE_BORROWER, [borrowerId]);
             
             if((result as ResultSetHeader).affectedRows == 0)
                 return DATABASE_OPERATION_STATUS.FAIL;
@@ -140,7 +140,7 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
 
     async readBorrowers(): Promise<[DATABASE_OPERATION_STATUS, Borrower[]]> {
         try{
-            const [result] = await (this.databaseInstance as Connection).execute(READ_BORROWERS);
+            const [result] = await (this.databaseInstance as Connection).query(READ_BORROWERS);
             return [DATABASE_OPERATION_STATUS.SUCCESS, result as Borrower[]];
         }
         catch (err) {
@@ -148,9 +148,9 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
     }
 
-    async updateBorrower(name: string, email: string, register_date: Date, borrower_id: number): Promise<DATABASE_OPERATION_STATUS> {
+    async updateBorrower(name: string, email: string, registerDate: Date, borrowerId: number): Promise<DATABASE_OPERATION_STATUS> {
         try{
-            const [result] = await (this.databaseInstance as Connection).execute(UPDATE_BORROWER, [name, email, register_date, borrower_id]);
+            const [result] = await (this.databaseInstance as Connection).execute(UPDATE_BORROWER, [name, email, registerDate, borrowerId]);
             
             if((result as ResultSetHeader).affectedRows == 0)
                 return DATABASE_OPERATION_STATUS.FAIL;
@@ -159,6 +159,43 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
         catch {
             return DATABASE_OPERATION_STATUS.FAIL;
+        }
+    }
+
+    async borrowBook(borrowerId: number, bookId: number, dueDate: Date, registrationDate: Date): Promise<DATABASE_OPERATION_STATUS>{
+        try{
+            await (this.databaseInstance as Connection).execute(BORROW_BOOK, [borrowerId, bookId, registrationDate, dueDate]);
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch(err) {
+            return DATABASE_OPERATION_STATUS.FAIL;
+        }    
+    }
+
+    async returnBook(borrowerId: number, book_id: number): Promise<DATABASE_OPERATION_STATUS> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).execute(RETURN_BOOK, [borrowerId, book_id]);
+            
+            if((result as ResultSetHeader).affectedRows == 0)
+                return DATABASE_OPERATION_STATUS.FAIL;
+
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch {
+            return DATABASE_OPERATION_STATUS.FAIL;
+        }
+    }
+
+    async readBorrowedBooks(borrowerId: number): Promise<[DATABASE_OPERATION_STATUS, Book[]]> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).query(READ_BORROWED_BOOKS, [borrowerId]);
+            const idList = (result as {book_id: number}[]).map((book)=>book.book_id);
+            const [bookResult] = await (this.databaseInstance as Connection).query(READ_BOOKS_BATCH((this.databaseInstance as Connection).escape(idList)));
+            console.log(bookResult);
+            return [DATABASE_OPERATION_STATUS.SUCCESS, bookResult as Book[]];
+        }
+        catch (err) {
+            return [DATABASE_OPERATION_STATUS.FAIL, []];
         }
     }
 }

@@ -7,6 +7,7 @@ import { loginRouter } from "./routes/login";
 import { bookRouter } from "./routes/book";
 import { borrowerRouter } from "./routes/borrower";
 import { verifyJWT } from "./middlewares/verifyJwt";
+import { borrowRouter } from "./routes/borrow";
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(express.json());
 
 app.use(ROUTES.REGISETR, registerRouter);
 app.use(ROUTES.LOGIN, loginRouter);
+
+app.use(ROUTES.BORROW, borrowRouter);
 
 app.use(verifyJWT);
 app.use(ROUTES.BOOKS, bookRouter);
