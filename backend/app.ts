@@ -8,6 +8,7 @@ import { bookRouter } from "./routes/book";
 import { borrowerRouter } from "./routes/borrower";
 import { verifyJWT } from "./middlewares/verifyJwt";
 import { borrowRouter } from "./routes/borrow";
+import { rateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(ROUTES.LOGIN, loginRouter);
 app.use(ROUTES.BORROW, borrowRouter);
 
 app.use(verifyJWT);
+app.use(rateLimiter);
 app.use(ROUTES.BOOKS, bookRouter);
 app.use(ROUTES.BORROWER, borrowerRouter);
 

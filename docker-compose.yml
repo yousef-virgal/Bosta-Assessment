@@ -3,6 +3,7 @@ services:
   backend:
     depends_on:
       - database
+      - redis
     build: ./backend/
     env_file:
       - ./.env
@@ -11,6 +12,8 @@ services:
     ports:
       - "$BACKEND_LOCAL_PORT:$BACKEND_CONTAINER_PORT"
     restart: unless-stopped
+  redis:
+    image: redis
   database:
     image: mysql:5.7.24
     restart: always 
