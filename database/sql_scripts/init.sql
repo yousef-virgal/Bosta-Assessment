@@ -23,5 +23,14 @@ CREATE TABLE IF NOT EXISTS Library.Books (
 
 GO
 
+CREATE TABLE IF NOT EXISTS Library.Borrowers (
+    borrower_id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL,
+    register_date Date NOT NULL
+);
+
+GO
+
 ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY '123456'; 
 flush privileges;

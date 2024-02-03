@@ -2,9 +2,10 @@ import mysql, { Connection, ResultSetHeader } from "mysql2/promise";
 
 import { BaseDataBaseHandler } from "../base_database_handler/base_database_handler";
 import { DATABASE_OPERATION_STATUS } from "../base_database_handler/base_database_handler_types";
-import { ADD_ADMIN_USER, ADD_BOOK, DELETE_BOOK, READ_ADMIN_USER, READ_BOOKS, UPDATE_BOOK, UPDATE_JWT } from "./mysql_query_strings";
+import { ADD_ADMIN_USER, ADD_BOOK, ADD_BORROWER, DELETE_BOOK, DELETE_BORROWER, READ_ADMIN_USER, READ_BOOKS, READ_BORROWERS, UPDATE_BOOK, UPDATE_BORROWER, UPDATE_JWT } from "./mysql_query_strings";
 import { Admin } from "../models/adminModel";
 import { Book } from "../models/bookModel";
+import { Borrower } from "../models/borrowerModel";
 
 export class MysqlDataBaseHandler extends BaseDataBaseHandler{
     databaseInstance: Connection | undefined;
@@ -109,6 +110,55 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
         }
         catch (err) {
             return [DATABASE_OPERATION_STATUS.FAIL, []];
+        }
+    }
+
+    async addBorrower(name: string, email: string, register_date: Date): Promise<DATABASE_OPERATION_STATUS> {
+        try{
+            await (this.databaseInstance as Connection).execute(ADD_BORROWER, [name, email, register_date]);
+            
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch {
+            return DATABASE_OPERATION_STATUS.FAIL;
+        }
+    }
+
+    async deleteBorrower(borrower_id: number): Promise<DATABASE_OPERATION_STATUS> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).execute(DELETE_BORROWER, [borrower_id]);
+            
+            if((result as ResultSetHeader).affectedRows == 0)
+                return DATABASE_OPERATION_STATUS.FAIL;
+
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch {
+            return DATABASE_OPERATION_STATUS.FAIL;
+        }
+    }
+
+    async readBorrowers(): Promise<[DATABASE_OPERATION_STATUS, Borrower[]]> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).execute(READ_BORROWERS);
+            return [DATABASE_OPERATION_STATUS.SUCCESS, result as Borrower[]];
+        }
+        catch (err) {
+            return [DATABASE_OPERATION_STATUS.FAIL, []];
+        }
+    }
+
+    async updateBorrower(name: string, email: string, register_date: Date, borrower_id: number): Promise<DATABASE_OPERATION_STATUS> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).execute(UPDATE_BORROWER, [name, email, register_date, borrower_id]);
+            
+            if((result as ResultSetHeader).affectedRows == 0)
+                return DATABASE_OPERATION_STATUS.FAIL;
+
+            return DATABASE_OPERATION_STATUS.SUCCESS;
+        }
+        catch {
+            return DATABASE_OPERATION_STATUS.FAIL;
         }
     }
 }

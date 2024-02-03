@@ -5,6 +5,8 @@ import { ROUTES } from "./constants";
 import { registerRouter } from "./routes/register";
 import { loginRouter } from "./routes/login";
 import { bookRouter } from "./routes/book";
+import { borrowerRouter } from "./routes/borrower";
+import { verifyJWT } from "./middlewares/verifyJwt";
 
 const app = express();
 
@@ -14,7 +16,9 @@ app.use(express.json());
 app.use(ROUTES.REGISETR, registerRouter);
 app.use(ROUTES.LOGIN, loginRouter);
 
+app.use(verifyJWT);
 app.use(ROUTES.BOOKS, bookRouter);
+app.use(ROUTES.BORROWER, borrowerRouter);
 
 
 export default app;

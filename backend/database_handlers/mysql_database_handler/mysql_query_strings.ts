@@ -10,4 +10,12 @@ export const UPDATE_BOOK = "UPDATE Books SET title = ?, author = ?, isbn = ?, av
 
 export const DELETE_BOOK = "DELETE FROM Books WHERE book_id = ?"
 
-export const READ_BOOKS = "SELECT title, author, isbn, available_quantity, shelf_location FROM Books WHERE title = COALESCE(?,title) AND author = COALESCE(?,author) AND isbn = COALESCE(?,isbn)"
+export const READ_BOOKS = "SELECT book_id, title, author, isbn, available_quantity, shelf_location FROM Books WHERE title = COALESCE(?,title) AND author = COALESCE(?,author) AND isbn = COALESCE(?,isbn)"
+
+export const ADD_BORROWER = "INSERT INTO Borrowers (name, email, register_date) VALUES (?, ?, ?)";
+
+export const DELETE_BORROWER = "DELETE FROM Borrowers WHERE borrower_id = ?";
+
+export const UPDATE_BORROWER = "UPDATE Borrowers SET name = ?, email = ?, register_date = ? WHERE borrower_id = ?";
+
+export const READ_BORROWERS = "SELECT borrower_id, name, email, register_date FROM Borrowers";
