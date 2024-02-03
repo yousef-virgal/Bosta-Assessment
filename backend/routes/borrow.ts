@@ -9,6 +9,9 @@ borrowRouter.route("/")
 
 borrowRouter.route("/return")
     .post(borrowController.returnBook);
+    
+borrowRouter.route("/overdue")
+    .get(borrowController.getOverDueBooks);
 
 borrowRouter.route("/:id")
     .get(borrowController.getBorrowedBooks);

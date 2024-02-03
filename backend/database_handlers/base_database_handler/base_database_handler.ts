@@ -1,4 +1,5 @@
 import { Admin } from "../models/adminModel";
+import { BookBorrower } from "../models/bookBorrower";
 import { Book } from "../models/bookModel";
 import { Borrower } from "../models/borrowerModel";
 import { DATABASE_OPERATION_STATUS } from "./base_database_handler_types";
@@ -34,4 +35,6 @@ export abstract class BaseDataBaseHandler {
     abstract returnBook(borrowerId: number, bookId: number): Promise<DATABASE_OPERATION_STATUS>;
 
     abstract readBorrowedBooks(borrowerId: number): Promise<[DATABASE_OPERATION_STATUS, Book[]]>;
+
+    abstract readOverDueBooks(date: Date): Promise<[DATABASE_OPERATION_STATUS, BookBorrower[]]>;
 }

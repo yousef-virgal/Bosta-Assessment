@@ -12,6 +12,7 @@ interface BrorowController {
     borrowBook: (req: Request, res: Response) => Promise<unknown>;
     returnBook: (req: Request, res: Response) => Promise<unknown>;
     getBorrowedBooks: (req: Request, res: Response) => Promise<unknown>;
+    getOverDueBooks: (req: Request, res: Response) => Promise<unknown>;
 }
 
 export const borrowController: BrorowController = {
@@ -102,4 +103,14 @@ export const borrowController: BrorowController = {
 
         return sendResponse(res, 200, bookResult);
     },
+
+    getOverDueBooks: async (req: Request, res: Response) => {
+        const databaseHandler: BaseDataBaseHandler = DataBaseHandler;
+        const [status, result] = await databaseHandler.readOverDueBooks(new Date());
+
+        if(status === DATABASE_OPERATION_STATUS.FAIL)
+            return sendResponse(res, 500, "A database error occured"); 
+        
+        return sendResponse(res, 200, result);
+    }
 }

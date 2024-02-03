@@ -27,3 +27,5 @@ export const RETURN_BOOK = "DELETE FROM BorrowerBooks WHERE borrower_id = ? AND 
 export const READ_BORROWED_BOOKS = "SELECT book_id FROM BorrowerBooks WHERE borrower_id = ? ";
 
 export const READ_BOOKS_BATCH = (listString: string) => `SELECT book_id, title, author, isbn, available_quantity, shelf_location FROM Books WHERE book_id IN (${listString})`;
+
+export const READ_OVERDUE_BOOKS = "SELECT book_id, borrower_id, due_date FROM BorrowerBooks WHERE due_date < ?";

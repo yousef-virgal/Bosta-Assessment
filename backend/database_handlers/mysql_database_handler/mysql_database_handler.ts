@@ -2,10 +2,11 @@ import mysql, { Connection, ResultSetHeader } from "mysql2/promise";
 
 import { BaseDataBaseHandler } from "../base_database_handler/base_database_handler";
 import { DATABASE_OPERATION_STATUS } from "../base_database_handler/base_database_handler_types";
-import { ADD_ADMIN_USER, ADD_BOOK, ADD_BORROWER, BORROW_BOOK, DELETE_BOOK, DELETE_BORROWER, READ_ADMIN_USER, READ_BOOKS, READ_BOOKS_BATCH, READ_BORROWED_BOOKS, READ_BORROWERS, RETURN_BOOK, UPDATE_BOOK, UPDATE_BORROWER, UPDATE_JWT } from "./mysql_query_strings";
+import { ADD_ADMIN_USER, ADD_BOOK, ADD_BORROWER, BORROW_BOOK, DELETE_BOOK, DELETE_BORROWER, READ_ADMIN_USER, READ_BOOKS, READ_BOOKS_BATCH, READ_BORROWED_BOOKS, READ_BORROWERS, READ_OVERDUE_BOOKS, RETURN_BOOK, UPDATE_BOOK, UPDATE_BORROWER, UPDATE_JWT } from "./mysql_query_strings";
 import { Admin } from "../models/adminModel";
 import { Book } from "../models/bookModel";
 import { Borrower } from "../models/borrowerModel";
+import { BookBorrower } from "../models/bookBorrower";
 
 export class MysqlDataBaseHandler extends BaseDataBaseHandler{
     databaseInstance: Connection | undefined;
@@ -191,11 +192,33 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
             const [result] = await (this.databaseInstance as Connection).query(READ_BORROWED_BOOKS, [borrowerId]);
             const idList = (result as {book_id: number}[]).map((book)=>book.book_id);
             const [bookResult] = await (this.databaseInstance as Connection).query(READ_BOOKS_BATCH((this.databaseInstance as Connection).escape(idList)));
-            console.log(bookResult);
             return [DATABASE_OPERATION_STATUS.SUCCESS, bookResult as Book[]];
         }
         catch (err) {
             return [DATABASE_OPERATION_STATUS.FAIL, []];
         }
     }
+
+    async readOverDueBooks(date: Date): Promise<[DATABASE_OPERATION_STATUS, BookBorrower[]]> {
+        try{
+            const [result] = await (this.databaseInstance as Connection).query(READ_OVERDUE_BOOKS, [date]);
+            const recordResult = result as {book_id: number, borrower_id: number, due_date: Date}[];
+            const idList = recordResult.map((book)=>book.book_id);
+            const [bookResult] = await (this.databaseInstance as Connection).query(READ_BOOKS_BATCH((this.databaseInstance as Connection).escape(idList)));
+            
+            const overDueBooks:BookBorrower[] = (recordResult).map((bookBorrower) => {
+                return {
+                    book_id: bookBorrower.book_id,
+                    book_title: (bookResult as Book[]).find((book)=> book.book_id === bookBorrower.book_id)?.title,
+                    borrower_id: bookBorrower.borrower_id,
+                    late_period: Math.trunc((date.getTime() - bookBorrower.due_date.getTime()) / (1000 * 60 *60 *24))
+                } as BookBorrower;
+            })
+            return [DATABASE_OPERATION_STATUS.SUCCESS, overDueBooks];
+        }
+        catch (err) {
+            return [DATABASE_OPERATION_STATUS.FAIL, []];
+        }
+    }
+
 }
