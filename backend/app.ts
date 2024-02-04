@@ -17,7 +17,6 @@ app.use(express.json());
 
 app.use(ROUTES.REGISETR, registerRouter);
 app.use(ROUTES.LOGIN, loginRouter);
-
 app.use(ROUTES.BORROW, borrowRouter);
 
 app.use(verifyJWT);

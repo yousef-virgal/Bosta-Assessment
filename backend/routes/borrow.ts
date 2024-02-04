@@ -4,6 +4,7 @@ import { borrowController } from "../controllers/borrowController";
 
 export const borrowRouter = express.Router();
 
+// The Available routes for the borrow endpoint
 borrowRouter.route("/")
     .post(borrowController.borrowBook);
 
