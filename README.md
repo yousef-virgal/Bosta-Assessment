@@ -14,27 +14,29 @@ Note: The backend server tries to connect to the database before its ready to ac
 
 # DataBase Schema
 
+![1707080333389](image/README/1707080333389.png)
+
 # API Endpoints
 
 ### Register:
 
 This endpoint is used to create and register an Admin user, the admin user will be able to access the book and  borrower routes, while non-admin users won't
 
-###### Endpoint name: "/register"
+##### Endpoint name: "/register"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * username(required): the username of the admin
 * passowrd(required): the password for the admin account
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707074518586](image/README/1707074518586.png)
 
@@ -42,23 +44,23 @@ This endpoint is used to create and register an Admin user, the admin user will 
 
 This endpoint is used to login as an Admin user, the admin user will be able to access the book and  borrower routes, while non-admin users won't
 
-###### Endpoint name: "/login"
+##### Endpoint name: "/login"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * username(required): the username of the admin
 * passowrd(required): the password for the admin account
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: an object containing 2 fields
   1- the acess token (expires after 1h)
   2- the refresh token (expires after 1d)
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707074682427](image/README/1707074682427.png)
 
@@ -70,11 +72,11 @@ This endpoint is used for creating, updating, deleting and fetching book entitie
 
 #### Creating:
 
-###### Endpoint name: "/book"
+##### Endpoint name: "/book"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * title(required): the book title
 * author(required): the author of the book
@@ -82,12 +84,12 @@ This endpoint is used for creating, updating, deleting and fetching book entitie
 * available_quantity(required): an intger representing the available quantitiy for the this book
 * shelf_location(required): the location of the book
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707075301522](image/README/1707075301522.png)
 
@@ -95,11 +97,11 @@ This endpoint is used for creating, updating, deleting and fetching book entitie
 
 the updating is a full update not a patch update
 
-###### Endpoint name: "/book/`<book_id>`"
+##### Endpoint name: "/book/`<book_id>`"
 
-###### Endpoint method: PUT
+##### Endpoint method: PUT
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * title(required): the book title
 * author(required): the author of the book
@@ -107,41 +109,41 @@ the updating is a full update not a patch update
 * available_quantity(required): an intger representing the available quantitiy for the this book
 * shelf_location(required): the location of the book
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707075624846](image/README/1707075624846.png)
 
 #### Deleting:
 
-###### Endpoint name: "/book/`<book_id>`"
+##### Endpoint name: "/book/`<book_id>`"
 
-###### Endpoint method: DELETE
+##### Endpoint method: DELETE
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 No Parameters are needed
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707075786089](image/README/1707075786089.png)
 
 #### Fetching:
 
-###### Endpoint name: "/book"
+##### Endpoint name: "/book"
 
-###### Endpoint method: GET
+##### Endpoint method: GET
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * title (optional): the title of the book
 * author(optional): the author of the book
@@ -149,12 +151,12 @@ No Parameters are needed
 
 Note: not passing any query paramters will result in fetching all the books, and you can use any combination to filter on the books
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: an array of book entities
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707076127759](image/README/1707076127759.png)
 
@@ -168,22 +170,22 @@ This endpoint is used for creating, updating, deleting and fetching borrower ent
 
 #### Creating:
 
-###### Endpoint name: "/borrower"
+##### Endpoint name: "/borrower"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * name(required): the name of the borrower
 * email(required): the email of the borrower
 * register_date(required): the date string in the following format YYYY-MM-DD
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707076463911](image/README/1707076463911.png)
 
@@ -191,60 +193,60 @@ This endpoint is used for creating, updating, deleting and fetching borrower ent
 
 the updating is a full update not a patch update
 
-###### Endpoint name: "/borrower/`<borrower_id>`"
+##### Endpoint name: "/borrower/`<borrower_id>`"
 
-###### Endpoint method: PUT
+##### Endpoint method: PUT
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * name(required): the name of the borrower
 * email(required): the email of the borrower
 * register_date(required): the date string in the following format YYYY-MM-DD
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707076541774](image/README/1707076541774.png)
 
 #### Deleting:
 
-###### Endpoint name: "/borrower/`<borrower_id>`"
+##### Endpoint name: "/borrower/`<borrower_id>`"
 
-###### Endpoint method: DELETE
+##### Endpoint method: DELETE
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 No Parameters are needed
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707076577507](image/README/1707076577507.png)
 
 #### Fetching:
 
-###### Endpoint name: "/borrower"
+##### Endpoint name: "/borrower"
 
-###### Endpoint method: GET
+##### Endpoint method: GET
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 No paramters are needed all the borrowers are fetched with the GET request
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: an array of borrower entities
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707076717766](image/README/1707076717766.png)
 
@@ -254,80 +256,80 @@ This end point is used to make borrow and return requests, it also is used to vi
 
 #### Borrowing a book:
 
-###### Endpoint name: "/borrow"
+##### Endpoint name: "/borrow"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * borrower_id(required): an intger representing id of the borrower
 * book_id(required): an intger representing the id of the book to borrow
 * due_date(required): the date to return the book at, the date has to be in the following format: YYYY-MM-DD
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707077651810](image/README/1707077651810.png)
 
 #### Returning a book:
 
-###### Endpoint name: "/borrow/return"
+##### Endpoint name: "/borrow/return"
 
-###### Endpoint method: POST
+##### Endpoint method: POST
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 * borrower_id(required): an intger representing id of the borrower
 * book_id(required): an intger representing the id of the book to borrow
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: a string with a message for more clarification
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 
 
 #### Viewing borrowed books:
 
-###### Endpoint name: "/borrow/`<borrower_id>`"
+##### Endpoint name: "/borrow/`<borrower_id>`"
 
-###### Endpoint method: GET
+##### Endpoint method: GET
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 No Parameters are needed
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: an array of book entties
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707077894005](image/README/1707077894005.png)
 
 #### Viewing all overdue books:
 
-###### Endpoint name: "/borrow/overdue"
+##### Endpoint name: "/borrow/overdue"
 
-###### Endpoint method: GET
+##### Endpoint method: GET
 
-###### Endpoint paramters:
+##### Endpoint paramters:
 
 No Parameters are needed
 
-###### EndPoint response:
+##### EndPoint response:
 
 * status: a string indicating the status of the operation result
 * data: an array of borrowed books response
 
-###### Example for hiting the endpoint:
+##### Example for hiting the endpoint:
 
 ![1707078609727](image/README/1707078609727.png)
 
