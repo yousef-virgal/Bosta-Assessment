@@ -204,8 +204,9 @@ export class MysqlDataBaseHandler extends BaseDataBaseHandler{
             const [result] = await (this.databaseInstance as Connection).query(READ_OVERDUE_BOOKS, [date]);
             const recordResult = result as {book_id: number, borrower_id: number, due_date: Date}[];
             const idList = recordResult.map((book)=>book.book_id);
+            if (idList.length === 0)
+                return [DATABASE_OPERATION_STATUS.SUCCESS, []];
             const [bookResult] = await (this.databaseInstance as Connection).query(READ_BOOKS_BATCH((this.databaseInstance as Connection).escape(idList)));
-            
             const overDueBooks:BookBorrower[] = (recordResult).map((bookBorrower) => {
                 return {
                     book_id: bookBorrower.book_id,
